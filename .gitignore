@@ -1,0 +1,10 @@
+# Vivado generated files
+*.jou
+*.log
+*.str
+*.debug
+.Xil/
+Custom_CPU.cache/
+Custom_CPU.hw/
+Custom_CPU.ip_user_files/
+Custom_CPU.sim/
