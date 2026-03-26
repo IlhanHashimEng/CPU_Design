@@ -1,6 +1,6 @@
-# [Project Name] — CPU Design Journey
+# Custom CPU from Scratch
 
-> Designing a Custom CPU from Scratch
+> Designing a Custom CPU from Scratch to learn more about CPU and hardware
 
 ---
 
@@ -60,4 +60,22 @@
 
 - **Register mode** (`imm_mode = 0`): operand sourced from `GPR[rsrc2]`
 - **Immediate mode** (`imm_mode = 1`): operand is the 16-bit literal embedded in `IR[15:0]`
+---
+
+## Progress Log
+
+### Entry 001 — YYYY-MM-DD — _Title_
+**What I worked on:**
+_Created the ALU unit and describing the registers of the CPU._
+
+**Decisions made:**
+- 16 Bit Data register with 32 Registers (2^5). 5 Bit Bitfield to describe each register
+- 5 Bit Opcode to describe each instruction
+
+**Problems encountered:**
+_Describe any blockers or bugs._
+
+**Next steps:**
+- [ ] Next task
+
 ---
