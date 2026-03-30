@@ -8,7 +8,7 @@
 
 - **Architecture:** 16-bit, custom RISC-style
 - **Target:** Simulation (Verilog / testbench)
-- **Tools:** Verilog HDL, `timescale 1ns / 1ps`
+- **Tools:** Verilog HDL 
 
 ---
 
@@ -64,7 +64,7 @@
 
 ## Progress Log
 
-### Entry 001 — YYYY-MM-DD — _Title_
+### Entry 001 — 03-03-2026 — Creating Arithmetic and Logical Unit
 **What I worked on:**
 _Created the ALU unit and describing the registers of the CPU._
 
@@ -73,9 +73,214 @@ _Created the ALU unit and describing the registers of the CPU._
 - 5 Bit Opcode to describe each instruction
 
 **Problems encountered:**
-_Describe any blockers or bugs._
+- No idea how to do the ALU
 
 **Next steps:**
-- [ ] Next task
+- Creating condition flags
+
+---
+
+### Entry 002 — 26-03-2026 — Creating Flags (OVERFLOW FLAG) 
+**What I worked on:**
+_Identified and understand the logic behind flags_
+
+**Decisions made:**
+- Understand the logic behind Carry, Zero, Overflow and Sign flag
+
+
+**Addition**
+<table style="width:100%; border-collapse:collapse; font-family:monospace;">
+  <thead>
+    <tr style="background-color:#2d2d2d; color:#ffffff;">
+      <th style="border:1px solid #555; padding:10px; text-align:center;">IP1</th>
+      <th style="border:1px solid #555; padding:10px; text-align:center;">IP2</th>
+      <th style="border:1px solid #555; padding:10px; text-align:center;">RES</th>
+      <th style="border:1px solid #555; padding:10px; text-align:left;">Example</th>
+      <th style="border:1px solid #555; padding:10px; text-align:center;">OV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">3 + 1 = 4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">1 + 2 = -1</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">1</td>
+    </tr>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">3 - 1 = 2</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">3 + 1 = 4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">-1 + 3 = 2</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">-5 + 1 = -4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">-1 + (-4) = -5</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">1</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">3 + 1 = 4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+  </tbody>
+</table>
+
+- For addition, the OV flag is 1 only on two cases. Hence the logic equation should be
+```
+OV = (~IP1[MSB] & ~IP2[MSB] & RES[MSB]) | (IP1[MSB] & IP2[MSB] & ~RES[MSB])
+```
+
+**Subtraction**
+
+<table style="width:100%; border-collapse:collapse; font-family:monospace;">
+  <thead>
+    <tr style="background-color:#2d2d2d; color:#ffffff;">
+      <th style="border:1px solid #555; padding:10px; text-align:center;">IP1</th>
+      <th style="border:1px solid #555; padding:10px; text-align:center;">IP2</th>
+      <th style="border:1px solid #555; padding:10px; text-align:center;">RES</th>
+      <th style="border:1px solid #555; padding:10px; text-align:left;">Example</th>
+      <th style="border:1px solid #555; padding:10px; text-align:center;">OV</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">3 - 2 = 1</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">4 - 5 = -1</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">3 - (-1) = 4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">1 - (-5) = -1</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">1</td>
+    </tr>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">-1 - 3 = 4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">1</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">-1 + -3 = -4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#1e1e1e; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">&gt;0</td>
+      <td style="border:1px solid #555; padding:10px;">-1 - (-2) = 1</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+    <tr style="background-color:#252526; color:#d4d4d4;">
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center; color:#f48771;">&lt;0</td>
+      <td style="border:1px solid #555; padding:10px;">-1 - (-1) = 4</td>
+      <td style="border:1px solid #555; padding:10px; text-align:center;">0</td>
+    </tr>
+  </tbody>
+</table>
+
+- For Subtraction, the OV flag is 1 in only two cases. Hence the equation is
+
+```
+OV = ( ~IP1[MSB] & IP2[MSB] & RES[MSB] ) | ( IP1[MSB] & ~IP2[MSB] & ~RES[MSB])
+```
+
+**Problems encountered:**
+- None
+
+**Next steps:**
+- TBD
+
+## Entry 003 — 30-03-2026 — Creating Flags (Zero, Sign, Carry FLAG) 
+**What I worked on:**
+_Identified and understand the logic behind flags_
+
+**Decisions made:**
+- Understand the logic behind Carry, Zero, and Sign flag
+
+### Carry Flag
+
+```
+Carry Flag -> MSB of the result of addition.
+
+result[4:0](5 bit) = src1[3:0](4 bit) + src[3:0](4 bit)
+
+carry = result[MSB]
+```
+### Sign Flag
+
+```
+reg [3:0] result  = 1 0 0 0 -> -ve
+                  = 0 1 1 1 -> +ve
+
+Sign Flag = result[3]
+```
+### Zero Flag
+
+- Zero Flag -> Determines if the result is a zero. We OR the result, if any bits are 1, the last output will be 1. Then the NOT will change it to a 0. Hence, the Zero Flag will be 0.
+```
+reg [3:0] result  = 0 0 0 0 -> Set    ( Zero Flag = 1 )
+                  = 0 0 0 1 -> Reset  ( Zero Flag = 0 )
+
+Zero Flag = ~(result[3] | result [2] | result[1] | result[0])
+          = ~(| result)
+```
 
 ---
