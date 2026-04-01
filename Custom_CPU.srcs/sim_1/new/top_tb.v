@@ -80,7 +80,48 @@ dut.`isrc       = 56;
 $display("OP:XORI Rdst:%8b  Rsrc1:%8b imm_d:%8b",dut.GPR[4],dut.GPR[7], dut.`isrc );
 $display("-----------------------------------------------------------------");
 
+/////////////////////////// zero flag
+dut.IR  = 0;
+dut.GPR[0] = 0;
+dut.GPR[1] = 0; 
+dut.`imm_mode = 0;
+dut.`rsrc1 = 0;//gpr[0]
+dut.`rsrc2 = 1;//gpr[1]
+dut.`oper_type = 2;
+dut.`rdst = 2;
+#10;
+$display("OP:Zero Rsrc1:%0d  Rsrc2:%0d Rdst:%0d",dut.GPR[0], dut.GPR[1], dut.GPR[2] );
+$display("-----------------------------------------------------------------");
 
+//////////////////////////sign flag
+dut.IR = 0;
+dut.GPR[0] = 16'h8000; /////1000_0000_0000_0000
+dut.GPR[1] = 0; 
+dut.`imm_mode = 0;
+dut.`rsrc1 = 0;//gpr[0]
+dut.`rsrc2 = 1;//gpr[1]
+dut.`oper_type = 2;
+dut.`rdst = 2;
+#10;
+$display("OP:Sign Rsrc1:%0d  Rsrc2:%0d Rdst:%0d",dut.GPR[0], dut.GPR[1], dut.GPR[2] );
+$display("-----------------------------------------------------------------");
+
+////////////////////////carry flag
+dut.IR = 0;
+dut.GPR[0] = 16'h8000; /////1000_0000_0000_0000   <0
+dut.GPR[1] = 16'h8002; /////1000_0000_0000_0010   <0
+dut.`imm_mode = 0;
+dut.`rsrc1 = 0;//gpr[0]
+dut.`rsrc2 = 1;//gpr[1]
+dut.`oper_type = 2;
+dut.`rdst = 2;    //////// 0000_0000_0000_0010  >0
+#10;
+
+$display("OP:Carry & Overflow Rsrc1:%0d  Rsrc2:%0d Rdst:%0d",dut.GPR[0], dut.GPR[1], dut.GPR[2] );
+$display("-----------------------------------------------------------------");
+
+#20;
+$finish;
 end
 
 endmodule

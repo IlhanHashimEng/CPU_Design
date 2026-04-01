@@ -184,6 +184,87 @@ end
 //////////////////////////////////////////////////////////////
 endcase
 end
+////////////////////////////////////////////////////////////////////////////
+
+reg sign = 0, zero = 0, overflow = 0, carry  = 0;
+reg [16:0] temp_sum;
+
+always@(*)
+begin
+
+//////////////////sign flag
+
+if (`oper_type == `mul)
+    sign = SGPR[15]; // MSB of Multiplication Operation
+else 
+    sign = GPR[`rdst][15]; // Add or Sub Operation
+
+//////////////////carry flag
+
+if (`oper_type == `add)
+    begin
+        if (`imm_mode)
+            begin
+                temp_sum    = GPR[`rsrc1] + `isrc;
+                carry       = temp_sum[16];
+            end
+        else
+            begin
+            temp_sum    = GPR[`rsrc1] + GPR[`rsrc2];
+            carry       = temp_sum[16];
+            end
+     end
+else
+
+    begin
+        carry = 1'b0; 
+    end
+    
+//////////////////zero flag
+ 
+if (`oper_type == `mul)
+
+    zero = ~((| SGPR[15]) | (| GPR[`rdst]));
+
+else
+    zero = ~(| GPR[`rdst]);
+    
+//////////////////overflow flag        
+    
+if (`oper_type == `add)
+
+    begin
+        if(`imm_mode)
+            overflow = ( (~GPR[`rsrc1][15]) & ~IR[15] & (GPR[`rdst][15]) | (GPR[`rsrc1][15]) & IR[15] & (~GPR[`rdst][15]) );
+        else
+            overflow = ( (~GPR[`rsrc1][15]) & ~GPR[`rsrc2][15] & (GPR[`rdst][15]) | (GPR[`rsrc1][15]) & GPR[`rsrc2][15] & (~GPR[`rdst][15]) );
+    end
+    
+else if(`oper_type == `sub)
+
+    begin
+    
+        if(`imm_mode)
+            overflow = ( ( (~GPR[`rsrc1][15]) & IR[15] & (GPR[`rdst][15]) ) | ( (GPR[`rsrc1][15] & ~IR[15] & (~GPR[`rdst][15])) ) );
+        else
+            overflow = ( ( (~GPR[`rsrc1][15]) & GPR[`rsrc2][15] & (GPR[`rdst][15]) ) | ( (GPR[`rsrc1][15] & ~GPR[`rsrc2][15] & (~GPR[`rdst][15])) ) );
+    end
+
+else
+
+    begin
+    overflow = 1'b0;
+    end
+
+  
+    
+    
+////////////////////////////////////////////////////////////////////////////
+ 
+end
+
+
+
 endmodule
 
 ////////////////////////////////////////////////////////////////////////////

@@ -282,5 +282,12 @@ reg [3:0] result  = 0 0 0 0 -> Set    ( Zero Flag = 1 )
 Zero Flag = ~(result[3] | result [2] | result[1] | result[0])
           = ~(| result)
 ```
+## Entry 004 — 01-04-2026 — RTL Implementation of Flags (Zero, Sign, Carry FLAG) 
+**What I worked on:**
+_Implement the flags in Verilog HDL_
+
+**Decisions made:**
+- Created a different always block to handle the flag process
+
 
 ---
