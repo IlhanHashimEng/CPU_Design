@@ -289,5 +289,102 @@ _Implement the flags in Verilog HDL_
 **Decisions made:**
 - Created a different always block to handle the flag process
 
+### Sign Bit
+
+```
+//////////////////sign flag
+
+if (`oper_type == `mul)
+    sign = SGPR[15]; // MSB of Multiplication Operation
+else 
+    sign = GPR[`rdst][15]; // Add or Sub Operation
+
+```
+**Explanation**
+
+- **If Condition** : If Multiplication is used, we take the High Byte register and read the MSB.
+- **Else Condition** : Other than mul (Add / Sub), we take the MSB of the destination register.
+
+**Carry Bit**
+
+```
+
+if (`oper_type == `add)
+    begin
+        if (`imm_mode)
+            begin
+                temp_sum    = GPR[`rsrc1] + `isrc;
+                carry       = temp_sum[16];
+            end
+        else
+            begin
+            temp_sum    = GPR[`rsrc1] + GPR[`rsrc2];
+            carry       = temp_sum[16];
+            end
+     end
+else
+
+    begin
+        carry = 1'b0; 
+    end
+    
+```
+**Explanation**
+
+- **If Immediate Mode** : We add the value from the src1 register with the immediate value, then keep the output inside a temp_sum which is 17-bit long. Then read the MSB for the Carry Bit
+- **If Not Immediate Mode** : We take the sum of the two register and place inside the 17-bit temp sum register. Then read the MSb of temp sum for the carry bit.
+- **Else** : If not add operation, just put carry bit as 0.
+
+**Zero Bit**
+
+```
+ 
+if (`oper_type == `mul)
+
+    zero = ~((| SGPR[15]) | (| GPR[`rdst]));
+
+else
+    zero = ~(| GPR[`rdst]);
+    
+    
+```
+**Explanation**
+
+- **If Case** : Since Multiply operation is spread across two regs, we have to OR both upper and lower regs.
+- **Else** : Other operations, just OR the bits together.
+
+**Overflow Bit**
+
+```
+if (`oper_type == `add)
+
+    begin
+        if(`imm_mode)
+            overflow = ( (~GPR[`rsrc1][15]) & ~IR[15] & (GPR[`rdst][15]) | (GPR[`rsrc1][15]) & IR[15] & (~GPR[`rdst][15]) );
+        else
+            overflow = ( (~GPR[`rsrc1][15]) & ~GPR[`rsrc2][15] & (GPR[`rdst][15]) | (GPR[`rsrc1][15]) & GPR[`rsrc2][15] & (~GPR[`rdst][15]) );
+    end
+    
+else if(`oper_type == `sub)
+
+    begin
+    
+        if(`imm_mode)
+            overflow = ( ( (~GPR[`rsrc1][15]) & IR[15] & (GPR[`rdst][15]) ) | ( (GPR[`rsrc1][15] & ~IR[15] & (~GPR[`rdst][15])) ) );
+        else
+            overflow = ( ( (~GPR[`rsrc1][15]) & GPR[`rsrc2][15] & (GPR[`rdst][15]) ) | ( (GPR[`rsrc1][15] & ~GPR[`rsrc2][15] & (~GPR[`rdst][15])) ) );
+    end
+
+else
+
+    begin
+    overflow = 1'b0;
+    end
+```
+**Explanation**
+
+- **If Add Case** : We take the logical case implementation from Entry 003.
+- **If Sub Case** : We take the logical case mplementation from Entry 003.
+- **Else** : We just set overflow to 0.
 
 ---
